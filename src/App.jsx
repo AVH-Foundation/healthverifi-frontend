@@ -1,13 +1,8 @@
 import React from 'react';
+import PatientIntake from './pages/PatientIntake';
 
 function App() {
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold text-blue-600">
-        HealthVerifi Frontend Running with React + Vite + Tailwind!
-      </h1>
-    </div>
-  );
+  return <PatientIntake />;
 }
 
 export default App;
