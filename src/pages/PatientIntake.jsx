@@ -1,32 +1,88 @@
-import React from 'react';
+// src/pages/PatientIntake.jsx
 
-export default function PatientIntake() {
+import React, { useState } from 'react';
+
+const PatientIntake = () => {
+  const [file, setFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState('');
+  const [medicaidId, setMedicaidId] = useState('');
+  const [eligibilityStatus, setEligibilityStatus] = useState('');
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      setUploadStatus('Please select a CSV file first.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/upload-patients', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      setUploadStatus(`Upload successful: ${JSON.stringify(data)}`);
+    } catch (error) {
+      setUploadStatus(`Upload failed: ${error.message}`);
+    }
+  };
+
+  const checkEligibility = async () => {
+    if (!medicaidId) {
+      setEligibilityStatus('Please enter a Medicaid ID.');
+      return;
+    }
+    try {
+      const response = await fetch('http://127.0.0.1:8000/check-eligibility', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ medicaid_id: medicaidId }),
+      });
+      const data = await response.json();
+      setEligibilityStatus(`Eligibility Status: ${JSON.stringify(data)}`);
+    } catch (error) {
+      setEligibilityStatus(`Check failed: ${error.message}`);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4 text-center">Patient Intake Form</h1>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Full Name</label>
-            <input type="text" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
-            <input type="date" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input type="email" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-            <input type="tel" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          </div>
-          <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition">
-            Submit
-          </button>
-        </form>
+    <div className="max-w-xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Patient Intake</h1>
+
+      <div className="mb-4">
+        <input type="file" accept=".csv" onChange={handleFileChange} className="mb-2" />
+        <button
+          onClick={handleUpload}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Upload CSV
+        </button>
+        {uploadStatus && <p className="mt-2 text-sm">{uploadStatus}</p>}
+      </div>
+
+      <div className="mt-8">
+        <input
+          type="text"
+          placeholder="Enter Medicaid ID"
+          value={medicaidId}
+          onChange={(e) => setMedicaidId(e.target.value)}
+          className="border p-2 rounded w-full mb-2"
+        />
+        <button
+          onClick={checkEligibility}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Check Eligibility
+        </button>
+        {eligibilityStatus && <p className="mt-2 text-sm">{eligibilityStatus}</p>}
       </div>
     </div>
   );
-}
+};
+
+export default PatientIntake;
