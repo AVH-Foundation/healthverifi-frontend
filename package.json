@@ -1,22 +1,28 @@
 {
   "name": "healthverifi-frontend",
-  "version": "0.0.1",
-  "private": true,
-  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "homepage": "https://AVH-Foundation.github.io/healthverifi-frontend",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
   "dependencies": {
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+      "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
-    "postcss": "^8.4.38",
+    "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
     "vite": "^7.0.3"
   }
